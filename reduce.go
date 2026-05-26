@@ -1,9 +1,5 @@
 package rill
 
-import (
-	"github.com/destel/rill/internal/core"
-)
-
 // Reduce combines all items from the input stream into a single value using a binary function f.
 // The function f is called for pairs of items, progressively reducing the stream contents until only one value remains.
 //
@@ -19,52 +15,11 @@ import (
 //
 // See the package documentation for more information on blocking unordered functions and error handling.
 func Reduce[A any](in <-chan Try[A], n int, f func(A, A) (A, error)) (result A, hasResult bool, err error) {
-	var once core.OnceWithWait
-	setReturns := func(result1 A, hasResult1 bool, err1 error) {
-		once.Do(func() {
-			result = result1
-			hasResult = hasResult1
-			err = err1
-		})
-	}
-
-	go func() {
-		var zero A
-		var zeroTry Try[A]
-
-		res, ok := core.Reduce(in, n, func(a1, a2 Try[A]) Try[A] {
-			if once.WasCalled() {
-				return zeroTry
-			}
-
-			if err := a1.Error; err != nil {
-				setReturns(zero, false, err)
-				return zeroTry
-			}
-
-			if err := a2.Error; err != nil {
-				setReturns(zero, false, err)
-				return zeroTry
-			}
-
-			res, err := f(a1.Value, a2.Value)
-			if err != nil {
-				setReturns(zero, false, err)
-				return zeroTry
-			}
-
-			return Try[A]{Value: res} // the only non-dummy return
-		})
-
-		if res.Error != nil {
-			ok = false
-		}
-		setReturns(res.Value, ok, res.Error)
-	}()
-
-	once.Wait()
-	return
+	_ = "STUB: not implemented"
+	return *new(A), false, nil
 }
+
+// the only non-dummy return
 
 // MapReduce transforms the input stream into a Go map using a mapper and a reducer functions.
 // The transformation is performed in two concurrent phases.
@@ -80,57 +35,6 @@ func Reduce[A any](in <-chan Try[A], n int, f func(A, A) (A, error)) (result A, 
 //
 // See the package documentation for more information on blocking unordered functions and error handling.
 func MapReduce[A any, K comparable, V any](in <-chan Try[A], nm int, mapper func(A) (K, V, error), nr int, reducer func(V, V) (V, error)) (map[K]V, error) {
-	var retMap map[K]V
-	var retErr error
-	var once core.OnceWithWait
-	setReturns := func(m map[K]V, err error) {
-		once.Do(func() {
-			retMap = m
-			retErr = err
-		})
-	}
-
-	go func() {
-		var zeroKey K
-		var zeroVal V
-
-		res := core.MapReduce(in,
-			nm, func(a Try[A]) (K, V) {
-				if once.WasCalled() {
-					return zeroKey, zeroVal
-				}
-
-				if a.Error != nil {
-					setReturns(nil, a.Error)
-					return zeroKey, zeroVal
-				}
-
-				k, v, err := mapper(a.Value)
-				if err != nil {
-					setReturns(nil, err)
-					return zeroKey, zeroVal
-				}
-
-				return k, v
-			},
-			nr, func(v1, v2 V) V {
-				if once.WasCalled() {
-					return zeroVal
-				}
-
-				res, err := reducer(v1, v2)
-				if err != nil {
-					setReturns(nil, err)
-					return zeroVal
-				}
-
-				return res
-			},
-		)
-
-		setReturns(res, nil)
-	}()
-
-	once.Wait()
-	return retMap, retErr
+	_ = "STUB: not implemented"
+	return nil, nil
 }

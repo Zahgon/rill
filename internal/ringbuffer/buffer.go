@@ -7,124 +7,40 @@ type Buffer[T any] struct {
 	offset, size int
 }
 
-func (b *Buffer[T]) Cap() int {
-	return len(b.data)
-}
+func (b *Buffer[T]) Cap() int { _ = "STUB: not implemented"; return 0 }
 
 func (b *Buffer[T]) Len() int {
-	return b.size
+	_ = "STUB: not implemented"
+
+	// write to end
+	return 0
 }
 
-// write to end
-func (b *Buffer[T]) Write(v T) {
-	b.Grow(1)
-
-	pos := (b.offset + b.size) % len(b.data)
-	b.data[pos] = v
-	b.size++
-}
+func (b *Buffer[T]) Write(v T) { _ = "STUB: not implemented"; return }
 
 // read from start
-func (b *Buffer[T]) Read() (T, bool) {
-	if b.size == 0 {
-		var zero T
-		return zero, false
-	}
+func (b *Buffer[T]) Read() (T, bool) { _ = "STUB: not implemented"; return *new(T), false }
 
-	v := b.data[b.offset]
-	b.Discard()
-	return v, true
-}
+func (b *Buffer[T]) Peek() (T, bool) { _ = "STUB: not implemented"; return *new(T), false }
 
-func (b *Buffer[T]) Peek() (T, bool) {
-	if b.size == 0 {
-		var zero T
-		return zero, false
-	}
+func (b *Buffer[T]) Discard() bool { _ = "STUB: not implemented"; return false }
 
-	return b.data[b.offset], true
-}
-
-func (b *Buffer[T]) Discard() bool {
-	if b.size == 0 {
-		return false
-	}
-
-	var zero T
-	b.data[b.offset] = zero // let GC do its work
-
-	b.offset = (b.offset + 1) % len(b.data)
-	b.size--
-	return true
-}
+// let GC do its work
 
 // change the capacity and defragment the buffer
 // panics if newCap is less than buf.size
-func (b *Buffer[T]) setCap(newCap int) {
-	newData := make([]T, newCap)
+func (b *Buffer[T]) setCap(newCap int) { _ = "STUB: not implemented"; return }
 
-	end := b.offset + b.size
-	if end <= len(b.data) {
-		copy(newData, b.data[b.offset:end])
-	} else {
-		copied := copy(newData, b.data[b.offset:])
-		copy(newData[copied:], b.data[:b.size-copied])
-	}
+func (b *Buffer[T]) Grow(n int) { _ = "STUB: not implemented"; return }
 
-	b.data = newData
-	b.offset = 0
-}
+// enough
 
-func (b *Buffer[T]) Grow(n int) {
-	targetSize := b.size + n
-	targetCap := cap(b.data)
+// double the capacity
 
-	if targetCap >= targetSize {
-		return // enough
-	}
+func (b *Buffer[T]) CanShrink() bool { _ = "STUB: not implemented"; return false }
 
-	if targetCap < minCap {
-		targetCap = minCap
-	}
-	for targetCap < targetSize {
-		targetCap <<= 1 // double the capacity
-	}
+func (b *Buffer[T]) Shrink() { _ = "STUB: not implemented"; return }
 
-	b.setCap(targetCap)
-}
+func (b *Buffer[T]) Compact() { _ = "STUB: not implemented"; return }
 
-func (b *Buffer[T]) CanShrink() bool {
-	half := cap(b.data) >> 1
-	return half >= minCap && half >= b.size
-}
-
-func (b *Buffer[T]) Shrink() {
-	if b.CanShrink() {
-		b.setCap(cap(b.data) >> 1)
-	}
-}
-
-func (b *Buffer[T]) Compact() {
-	targetCap := cap(b.data)
-	for {
-		half := targetCap >> 1
-		if half >= minCap && half >= b.size {
-			targetCap = half
-		} else {
-			break
-		}
-	}
-
-	if targetCap < cap(b.data) {
-		b.setCap(targetCap)
-	}
-}
-
-func (b *Buffer[T]) Reset() {
-	var zero T
-	for i := 0; i < b.size; i++ {
-		b.data[(b.offset+i)%len(b.data)] = zero
-	}
-	b.offset = 0
-	b.size = 0
-}
+func (b *Buffer[T]) Reset() { _ = "STUB: not implemented"; return }

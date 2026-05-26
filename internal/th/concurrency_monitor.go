@@ -23,74 +23,16 @@ type ConcurrencyMonitor struct {
 }
 
 func NewConcurrencyMonitor(window time.Duration) *ConcurrencyMonitor {
-	c := &ConcurrencyMonitor{
-		cond:   sync.NewCond(&sync.Mutex{}),
-		window: window,
-	}
-
-	c.timer = time.AfterFunc(1*time.Hour, func() {
-		c.cond.L.Lock()
-		defer c.cond.L.Unlock()
-
-		c.timerFired = true
-		c.cond.Broadcast()
-	})
-
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *ConcurrencyMonitor) Inc() {
-	c.cond.L.Lock()
-	defer c.cond.L.Unlock()
+func (c *ConcurrencyMonitor) Inc() { _ = "STUB: not implemented"; return }
 
-	c.lastChangeAt = time.Now()
-	if !c.timerFired {
-		c.timer.Reset(c.window)
-	}
+// block all goroutines unless "window" has passed since the last counter change
 
-	c.current++
-	if c.max < c.current {
-		c.max = c.current
-	}
+func (c *ConcurrencyMonitor) Dec() { _ = "STUB: not implemented"; return }
 
-	// block all goroutines unless "window" has passed since the last counter change
-	for !c.timerFired && time.Since(c.lastChangeAt) < c.window {
-		c.cond.Wait()
-	}
-}
+func (c *ConcurrencyMonitor) Reset() int { _ = "STUB: not implemented"; return 0 }
 
-func (c *ConcurrencyMonitor) Dec() {
-	c.cond.L.Lock()
-	defer c.cond.L.Unlock()
-
-	c.lastChangeAt = time.Now()
-	if !c.timerFired {
-		c.timer.Reset(c.window)
-	}
-
-	c.current--
-	c.cond.Broadcast()
-}
-
-func (c *ConcurrencyMonitor) Reset() int {
-	c.cond.L.Lock()
-	defer c.cond.L.Unlock()
-
-	if c.timer != nil {
-		c.timer.Stop()
-	}
-
-	c.current = 0
-	c.max = 0
-	c.lastChangeAt = time.Time{}
-	c.timer.Reset(1 * time.Hour)
-	c.timerFired = false
-	return c.max
-}
-
-func (c *ConcurrencyMonitor) Max() int {
-	c.cond.L.Lock()
-	defer c.cond.L.Unlock()
-
-	return c.max
-}
+func (c *ConcurrencyMonitor) Max() int { _ = "STUB: not implemented"; return 0 }

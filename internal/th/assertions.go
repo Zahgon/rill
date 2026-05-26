@@ -2,78 +2,38 @@
 package th
 
 import (
-	"sort"
 	"testing"
 	"time"
 )
 
 func ExpectValue[A comparable](t *testing.T, actual A, expected A) {
-	t.Helper()
-	if expected != actual {
-		t.Errorf("expected %v, got %v", expected, actual)
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 func ExpectValueLTE[A number](t *testing.T, actual A, expected A) {
-	t.Helper()
-	if actual > expected {
-		t.Errorf("expected %v <= %v", actual, expected)
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 func ExpectValueGTE[A number](t *testing.T, actual A, expected A) {
-	t.Helper()
-	if actual < expected {
-		t.Errorf("expected %v >= %v", actual, expected)
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 func ExpectValueInDelta[A number](t *testing.T, actual A, expected A, delta A) {
-	t.Helper()
-	diff := actual - expected
-	if diff < 0 {
-		diff = -diff
-	}
-
-	if diff > delta {
-		t.Errorf("expected %v in [%v-%v]", actual, expected-delta, expected+delta)
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 func ExpectSlice[A comparable](t *testing.T, actual []A, expected []A) {
-	t.Helper()
-	if len(expected) != len(actual) {
-		t.Errorf("expected %v, got %v", expected, actual)
-		return
-	}
-
-	for i := range expected {
-		if expected[i] != actual[i] {
-			t.Errorf("expected %v, got %v, mismatch at pos %d: %v != %v", expected, actual, i, expected[i], actual[i])
-			return
-		}
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 func ExpectMap[K, V comparable](t *testing.T, actual map[K]V, expected map[K]V) {
-	t.Helper()
-	if len(expected) != len(actual) {
-		t.Errorf("expected %v, got %v", expected, actual)
-		return
-	}
-
-	for k, v := range expected {
-		actualV, ok := actual[k]
-		if !ok {
-			t.Errorf("expected %v, got %v", expected, actual)
-			return
-		}
-
-		if v != actualV {
-			t.Errorf("expected %v, got %v", expected, actual)
-			return
-		}
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 type number interface {
@@ -84,111 +44,26 @@ type ordered interface {
 	~int | ~int64 | ~string
 }
 
-func ExpectSorted[T ordered](t *testing.T, arr []T) {
-	t.Helper()
-	isSorted := sort.SliceIsSorted(arr, func(i, j int) bool {
-		return arr[i] <= arr[j]
-	})
-	if !isSorted {
-		t.Errorf("expected sorted slice")
-	}
-}
+func ExpectSorted[T ordered](t *testing.T, arr []T) { _ = "STUB: not implemented"; return }
 
-func ExpectUnsorted[T ordered](t *testing.T, arr []T) {
-	t.Helper()
-	isSorted := sort.SliceIsSorted(arr, func(i, j int) bool {
-		return arr[i] <= arr[j]
-	})
-	if isSorted {
-		t.Errorf("expected unsorted slice")
-	}
-}
+func ExpectUnsorted[T ordered](t *testing.T, arr []T) { _ = "STUB: not implemented"; return }
 
-func ExpectDrainedChan[A any](t *testing.T, ch <-chan A) {
-	t.Helper()
-	select {
-	case x, ok := <-ch:
-		if ok {
-			t.Errorf("expected channel to be closed, but got %v", x)
-		}
-	default:
-		t.Errorf("expected channel to be closed, but it's blocked")
-	}
-}
+func ExpectDrainedChan[A any](t *testing.T, ch <-chan A) { _ = "STUB: not implemented"; return }
 
 func ExpectNeverClosedChan[A any](t *testing.T, ch <-chan A, waitFor time.Duration) {
-	t.Helper()
-	timeout := time.After(waitFor)
-	for {
-		select {
-		case _, ok := <-ch:
-			if !ok {
-				t.Errorf("expected channel to be never closed")
-				return
-			}
-		case <-timeout:
-			return
-		}
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
-func ExpectHang(t *testing.T, waitFor time.Duration, f func()) {
-	t.Helper()
-	done := make(chan struct{})
-
-	go func() {
-		defer close(done)
-		f()
-	}()
-
-	select {
-	case <-done:
-		t.Errorf("expected hang")
-	case <-time.After(waitFor):
-	}
-}
+func ExpectHang(t *testing.T, waitFor time.Duration, f func()) { _ = "STUB: not implemented"; return }
 
 func ExpectNotHang(t *testing.T, waitFor time.Duration, f func()) {
-	t.Helper()
-	done := make(chan struct{})
-
-	go func() {
-		defer close(done)
-		f()
-	}()
-
-	select {
-	case <-done:
-	case <-time.After(waitFor):
-		t.Errorf("test hanged")
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
-func ExpectError(t *testing.T, err error, message string) {
-	t.Helper()
-	if err == nil {
-		t.Errorf("expected error '%s', got nil", message)
-		return
-	}
+func ExpectError(t *testing.T, err error, message string) { _ = "STUB: not implemented"; return }
 
-	if err.Error() != message {
-		t.Errorf("expected error '%s', got '%s'", message, err.Error())
-	}
-}
+func ExpectNoError(t *testing.T, err error) { _ = "STUB: not implemented"; return }
 
-func ExpectNoError(t *testing.T, err error) {
-	t.Helper()
-	if err != nil {
-		t.Errorf("unexpected error '%v'", err)
-	}
-}
-
-func ExpectNotPanic(t *testing.T, f func()) {
-	t.Helper()
-	defer func() {
-		if r := recover(); r != nil {
-			t.Errorf("unexpected panic: %v", r)
-		}
-	}()
-	f()
-}
+func ExpectNotPanic(t *testing.T, f func()) { _ = "STUB: not implemented"; return }

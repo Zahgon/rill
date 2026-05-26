@@ -5,9 +5,6 @@ package mockapi
 
 import (
 	"context"
-	"fmt"
-	"hash/fnv"
-	"math/rand"
 	"sync"
 	"time"
 )
@@ -54,54 +51,19 @@ func init() {
 	}
 }
 
-func GetDepartments() ([]string, error) {
-	res := make([]string, len(departments))
-	copy(res, departments)
-	return res, nil
-}
+func GetDepartments() ([]string, error) { _ = "STUB: not implemented"; return nil, nil }
 
 // GetUser returns a user by ID.
 func GetUser(ctx context.Context, id int) (*User, error) {
-	if err := ctx.Err(); err != nil {
-		return nil, err
-	}
-	randomSleep(ctx, 500*time.Millisecond)
-
-	mu.RLock()
-	defer mu.RUnlock()
-
-	idx, err := getUserIndex(id)
-	if err != nil {
-		return nil, err
-	}
-
-	user := users[idx]
-	return &user, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // GetUsers returns a list of users by IDs.
 // If a user is not found, nil is returned in the corresponding position.
 func GetUsers(ctx context.Context, ids []int) ([]*User, error) {
-	if err := ctx.Err(); err != nil {
-		return nil, err
-	}
-	randomSleep(ctx, 1000*time.Millisecond)
-
-	mu.RLock()
-	defer mu.RUnlock()
-
-	res := make([]*User, 0, len(ids))
-	for _, id := range ids {
-		idx, err := getUserIndex(id)
-		if err != nil {
-			res = append(res, nil)
-		} else {
-			user := users[idx]
-			res = append(res, &user)
-		}
-	}
-
-	return res, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 type UserQuery struct {
@@ -111,97 +73,15 @@ type UserQuery struct {
 
 // ListUsers returns a paginated list of users optionally filtered by department.
 func ListUsers(ctx context.Context, query *UserQuery) ([]*User, error) {
-	if err := ctx.Err(); err != nil {
-		return nil, err
-	}
-	randomSleep(ctx, 1000*time.Millisecond)
-
-	const pageSize = 10
-	if query == nil {
-		query = &UserQuery{}
-	}
-
-	offset := query.Page * pageSize
-
-	mu.RLock()
-	defer mu.RUnlock()
-
-	res := make([]*User, 0, 10)
-	for _, user := range users {
-		if query.Department != "" && user.Department != query.Department {
-			continue
-		}
-
-		if offset > 0 {
-			offset--
-			continue
-		}
-
-		if len(res) >= pageSize {
-			break
-		}
-
-		userCopy := user
-		res = append(res, &userCopy)
-	}
-
-	return res, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // SaveUser saves a user.
-func SaveUser(ctx context.Context, user *User) error {
-	if err := ctx.Err(); err != nil {
-		return err
-	}
-	randomSleep(ctx, 1000*time.Millisecond)
+func SaveUser(ctx context.Context, user *User) error { _ = "STUB: not implemented"; return nil }
 
-	if user == nil {
-		return fmt.Errorf("user is nil")
-	}
+func getUserIndex(id int) (int, error) { _ = "STUB: not implemented"; return 0, nil }
 
-	if user.Name == "" {
-		return fmt.Errorf("username is empty")
-	}
-	if user.Age <= 0 {
-		return fmt.Errorf("age is invalid")
-	}
+func hash(input ...any) int { _ = "STUB: not implemented"; return 0 }
 
-	mu.Lock()
-	defer mu.Unlock()
-
-	idx, err := getUserIndex(user.ID)
-	if err != nil {
-		users = append(users, *user)
-	} else {
-		users[idx] = *user
-	}
-
-	return nil
-}
-
-func getUserIndex(id int) (int, error) {
-	for i, u := range users {
-		if u.ID == id {
-			return i, nil
-		}
-	}
-
-	return -1, fmt.Errorf("user not found")
-}
-
-func hash(input ...any) int {
-	hasher := fnv.New32()
-	fmt.Fprintln(hasher, input...)
-	return int(hasher.Sum32())
-}
-
-func randomSleep(ctx context.Context, max time.Duration) {
-	dur := time.Duration(rand.Intn(int(max)))
-	t := time.NewTimer(dur)
-	defer t.Stop()
-
-	select {
-	case <-t.C:
-	case <-ctx.Done():
-	}
-}
+func randomSleep(ctx context.Context, max time.Duration) { _ = "STUB: not implemented"; return }

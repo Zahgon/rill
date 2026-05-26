@@ -14,42 +14,12 @@ import (
 //
 //	stream := rill.FromSeq(someFunc())
 func FromSeq[A any](seq iter.Seq[A], err error) <-chan Try[A] {
-	if seq == nil && err == nil {
-		return nil
-	}
-	if err != nil {
-		out := make(chan Try[A], 1)
-		out <- Try[A]{Error: err}
-		close(out)
-		return out
-
-	}
-
-	out := make(chan Try[A])
-	go func() {
-		for val := range seq {
-			out <- Wrap(val, nil)
-		}
-		close(out)
-	}()
-	return out
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // FromSeq2 converts an iterator of value-error pairs into a stream.
-func FromSeq2[A any](seq iter.Seq2[A, error]) <-chan Try[A] {
-	if seq == nil {
-		return nil
-	}
-
-	out := make(chan Try[A])
-	go func() {
-		for val, err := range seq {
-			out <- Wrap(val, err)
-		}
-		close(out)
-	}()
-	return out
-}
+func FromSeq2[A any](seq iter.Seq2[A, error]) <-chan Try[A] { _ = "STUB: not implemented"; return nil }
 
 // ToSeq2 converts an input stream into an iterator of value-error pairs.
 //
@@ -59,13 +29,4 @@ func FromSeq2[A any](seq iter.Seq2[A, error]) <-chan Try[A] {
 // So all error handling, if needed, should be done inside the iterator (for-range loop body).
 //
 // See the package documentation for more information on blocking ordered functions.
-func ToSeq2[A any](in <-chan Try[A]) iter.Seq2[A, error] {
-	return func(yield func(A, error) bool) {
-		defer Discard(in)
-		for x := range in {
-			if !yield(x.Value, x.Error) {
-				return
-			}
-		}
-	}
-}
+func ToSeq2[A any](in <-chan Try[A]) iter.Seq2[A, error] { _ = "STUB: not implemented"; return nil }

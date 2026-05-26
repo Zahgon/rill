@@ -1,24 +1,11 @@
 package core
 
-func Drain[A any](in <-chan A) {
-	for range in {
-	}
-}
+func Drain[A any](in <-chan A) { _ = "STUB: not implemented"; return }
 
-func Discard[A any](in <-chan A) {
-	go Drain(in)
-}
+func Discard[A any](in <-chan A) { _ = "STUB: not implemented"; return }
 
 func Buffer[A any](in <-chan A, size int) <-chan A {
+	_ = "STUB: not implemented"
 	// we use size-1 since 1 additional item is held on the stack (x variable)
-	out := make(chan A, size-1)
-
-	go func() {
-		defer close(out)
-		for x := range in {
-			out <- x
-		}
-	}()
-
-	return out
+	return nil
 }
